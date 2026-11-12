@@ -1,7 +1,5 @@
 # Frostbar
 
-English | [日本語](#日本語)
-
 **Windows 11, the macOS way.** Frostbar is a shell that gives Windows 11 a menu bar, a Dock, search, an app grid, Control Center, a notification centre and a window overview in the manner of macOS, running on top of the Windows you already have.
 
 **[Download the latest version](../../releases/latest)** · free and open source (MIT) · Windows 11 (64-bit) · English and Japanese · [Website](https://ternando0831-lang.github.io/Frostbar/)
@@ -61,51 +59,3 @@ Run a development build with settings of its own with `src\Frostbar.App\bin\Debu
 ## License
 
 [MIT](LICENSE). Third-party software included (ManagedShell and others): [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt).
-
----
-
-## 日本語
-
-**Windows 11 を、macOS のように。** Frostbar は、メニューバー・Dock・検索・アプリ一覧・コントロールセンター・通知センター・ウインドウ一覧を、いつもの Windows の上に重ねて動かすシェルです。
-
-**[最新版をダウンロード](../../releases/latest)** · 無料・オープンソース（MIT）· Windows 11（64 ビット）· 日本語と英語
-
-> Frostbar は個人が作った非公式のソフトウェアで、Apple Inc. とは関係ありません。macOS は Apple Inc. の商標です。
-
-### できること
-
-- **メニューバー** — 前面のアプリの名前とメニュー（主なアプリはキーのショートカット付き）、時計、Wi-Fi・音量・電池、入力メニュー、再生中の曲、マイクとカメラの使用中の印。全画面のアプリの上では隠れ、上端で出てきます
-- **Dock** — 拡大、起動中の点、フォルダのスタック、ごみ箱、最小化した窓の縮小図、進捗バーとバッジ、ドラッグでの並べ替え。下・左・右に置け、自動で隠せます
-- **検索**（既定は Alt+Space）— アプリ、ファイル（Windows Search。[Everything](https://www.voidtools.com/) が動いていればそれも）、設定、計算と単位換算、PC の操作、クリップボードの履歴
-- **アプリ一覧** — ページ送り、並べ替え、フォルダ、非表示
-- **コントロールセンター・通知センター** — Wi-Fi・Bluetooth・集中モード・明るさ・音量・再生中、Windows の通知をアプリごとに
-- **ウインドウ一覧とホットコーナー** — 全部の窓を並べて選ぶ、仮想デスクトップの帯、画面の角で開く
-- **ガラスの見た目** — 縁が光を拾い、後ろが透けるガラス。ライトとダーク
-- **設定** — macOS の「システム設定」に似た画面で、ほぼすべてを変えられます
-
-### 必要なもの
-
-- Windows 11 22H2（ビルド 22621）以降、64 ビット（x64）。.NET はダウンロードした zip に入っています
-- 「縁で背後を曲げる」レンズは Windows 11 24H2 以降
-- 作者が確かめたのは Windows 11 26H2（ビルド 26300）の PC 1 台だけです
-
-### 入れ方
-
-1. [Releases](../../releases/latest) から `Frostbar-<版>-<コミット>-win-x64.zip` をダウンロード
-2. zip を右クリック →「プロパティ」→「許可する」に印 →「OK」（しないと、開くたびに Windows の警告が出ます）
-3. 「すべて展開」して、中の `setup.cmd` をダブルクリック。「Windows によって PC が保護されました」と出たら「詳細情報」→「実行」（署名のないアプリなので出ます）
-4. `%LOCALAPPDATA%\Programs\Frostbar` に入り、スタートメニューに「Frostbar」ができて起動します。初めての起動で案内が出て、Windows のタスクバーを隠すかはそこで選べます
-
-新しい版にするときは、新しい zip の `setup.cmd` をもう一度。設定はそのまま残ります。
-
-**タスクバーが戻らないとき**は `%LOCALAPPDATA%\Programs\Frostbar\restore-taskbar.cmd` をダブルクリック。Frostbar が動いていなくても元に戻します（固まっているときは、先にタスク マネージャーで終了してから）。
-
-**消し方**: `%LOCALAPPDATA%\Programs\Frostbar\uninstall.cmd` をダブルクリック。タスクバーを元に戻し、ログイン時の起動・スタートメニュー・プログラムを消します。設定（`%APPDATA%\Frostbar`・`%LOCALAPPDATA%\Frostbar`）も消すときは `uninstall.cmd -RemoveSettings`。
-
-### プライバシー
-
-Frostbar はネットに何も送りません（Web 検索はブラウザで開くだけです）。通知・クリップボードの履歴・最近使ったファイル・マイクとカメラの使用の記録は、画面に出すために手元で読むだけで、どこにも保存・送信しません。
-
-### ライセンス
-
-[MIT](LICENSE)。同梱している他者のソフトウェア（ManagedShell など）のライセンスは [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt)。
