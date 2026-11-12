@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Deterministic>true</Deterministic>
+    <!-- The shell's version. The SDK appends the commit to the informational version ("1.1.0+e3e275f…"); the settings
+         and the log show it as "1.1.0 (e3e275f)" (Core's VersionText) -->
+    <Version>1.2.0</Version>
+  </PropertyGroup>
+</Project>

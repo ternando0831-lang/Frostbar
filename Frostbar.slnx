@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Frostbar.App/Frostbar.App.csproj" />
+    <Project Path="src/Frostbar.Core/Frostbar.Core.csproj" />
+    <Project Path="src/Frostbar.Platform/Frostbar.Platform.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Frostbar.Core.Tests/Frostbar.Core.Tests.csproj" />
+  </Folder>
+</Solution>

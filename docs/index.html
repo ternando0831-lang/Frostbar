@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frostbar – Windows 11, the macOS way. A free shell with a menu bar and a Dock</title>
+<meta name="description" content="Frostbar is a free, open-source shell that gives Windows 11 a macOS-style menu bar, Dock, search, app grid and Control Center, running on top of Windows.">
+<link rel="canonical" href="https://ternando0831-lang.github.io/Frostbar/">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f1f0ed">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Frostbar">
+<meta property="og:title" content="Frostbar – Windows 11, the macOS way.">
+<meta property="og:description" content="A free, open-source shell with a menu bar, a Dock, search and Control Center for Windows 11.">
+<meta property="og:url" content="https://ternando0831-lang.github.io/Frostbar/">
+<meta property="og:image" content="https://ternando0831-lang.github.io/Frostbar/og.png">
+<meta property="og:locale" content="en_US">
+<link rel="icon" href="icon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="icon-256.png" sizes="256x256" type="image/png">
+<link rel="apple-touch-icon" href="icon-256.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;700&display=swap">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Frostbar",
+  "description": "A shell that gives Windows 11 a macOS-style menu bar, Dock, search and Control Center.",
+  "url": "https://ternando0831-lang.github.io/Frostbar/",
+  "downloadUrl": "https://github.com/ternando0831-lang/Frostbar/releases/latest",
+  "operatingSystem": "Windows 11",
+  "applicationCategory": "UtilitiesApplication",
+  "inLanguage": ["en", "ja"],
+  "license": "https://opensource.org/licenses/MIT",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": { "@type": "Person", "name": "ternando0831-lang", "url": "https://github.com/ternando0831-lang" }
+}
+</script>
+<script>document.documentElement.classList.add('js');</script>
+<style>
+  /* The page is one photograph of a desk, read like a plate in a manual: captions set straight on the wall,
+     a thin line from each to the thing it names. No panels, no cards. */
+  :root {
+    --paper: #f1f0ed;
+    --ink: #1b1a18;
+    --ink-soft: #4a4844;
+    --rule: #d3d1cb;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--paper); }
+  body {
+    margin: 0;
+    color: var(--ink);
+    font-family: "Libre Franklin", "Franklin Gothic Medium", "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  h1, h2, h3, p { margin: 0; }
+
+  .top {
+    position: fixed; z-index: 3; top: 0; left: 0; right: 0;
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 16px 24px;
+  }
+  .top .name { font-weight: 700; text-decoration: none; letter-spacing: -0.01em; }
+  .top nav a { margin-left: 24px; font-size: 15px; }
+
+  h1 { font-size: clamp(44px, 5.4vw, 92px); font-weight: 700; letter-spacing: -0.04em; line-height: 0.95; }
+  h2 { font-size: clamp(24px, 2.1vw, 34px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+  h3 { font-size: 16px; font-weight: 600; line-height: 1.35; }
+  .lead { font-size: clamp(18px, 1.55vw, 24px); margin-top: 12px; }
+  .intro p:not(.lead):not(.small), .block p { font-size: clamp(14px, 1.1vw, 16px); }
+  .intro p + p, .block p { margin-top: 12px; }
+  .note p { font-size: 15px; line-height: 1.45; color: var(--ink-soft); margin-top: 2px; }
+  .small { font-size: 14px; color: var(--ink-soft); }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 20px !important; }
+  .get {
+    display: inline-block; padding: 12px 20px; border-radius: 3px;
+    background: var(--ink); color: var(--paper); font-weight: 600; text-decoration: none;
+  }
+  .get:hover { background: #000; }
+  .poster { display: block; width: 100%; height: auto; }
+
+  /* Without scripts: the picture once, then every caption as plain text. */
+  .film { padding: 64px 24px 24px; max-width: 760px; margin: 0 auto; }
+  #picture { display: none; }
+  .scene { margin-top: 40px; }
+  .scene h2 { margin-bottom: 12px; }
+  .scene .note { margin-top: 12px; }
+  .scene svg { display: none; }
+
+  /* With scripts: the picture stays put and plays as the page scrolls; the captions take places on it. */
+  .js .film { padding: 0; max-width: none; position: relative; }
+  .js .poster { display: none; }
+  .js .stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+  .js #picture { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }
+  .js .scene { position: absolute; inset: 0; margin: 0; visibility: hidden; }
+  .js .scene .pin { position: absolute; margin: 0; }
+  .js .scene .pin[data-side="left"] { text-align: right; }
+  .js .scene svg { display: block; position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+  .leader .casing { fill: none; stroke: rgba(255, 255, 255, 0.85); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+  .leader .line { fill: none; stroke: var(--ink); stroke-width: 1.25; stroke-linejoin: round; }
+  .leader .ring { fill: var(--ink); stroke: #fff; stroke-width: 1.5; }
+  .leader text { display: none; font: 600 12px "Libre Franklin", "Segoe UI", sans-serif; fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
+
+  /* A narrow or tall window: the picture across the top, the captions under it, numbered instead of lined. */
+  .stacked .scene { padding: calc(64px + var(--picture-height, 56vw)) 20px 20px; counter-reset: caption; }
+  .stacked .scene .pin { position: static; width: auto !important; text-align: left !important; margin-top: 14px; }
+  .stacked .scene h2.pin { margin-top: 0; }
+  .stacked .note h3::before {
+    counter-increment: caption; content: counter(caption);
+    display: inline-block; width: 20px; height: 20px; margin-right: 8px; border: 1.5px solid var(--ink); border-radius: 50%;
+    font-size: 12px; line-height: 17px; text-align: center; vertical-align: 1px;
+  }
+  .stacked .leader .casing, .stacked .leader .line { display: none; }
+  .stacked .leader .ring { r: 10px; fill: #fff; stroke: var(--ink); }
+  .stacked .leader text { display: block; }
+
+  .details { max-width: 1040px; margin: 0 auto; padding: 96px 24px 64px; }
+  .details h2 { margin-bottom: 32px; }
+  .details dl { margin: 0; }
+  .details .row { display: grid; grid-template-columns: 240px 1fr; gap: 8px 40px; padding: 20px 0; border-top: 1px solid var(--rule); }
+  .details dt { font-weight: 600; }
+  .details dd { margin: 0; max-width: 62ch; }
+  .details ol { margin: 0; padding-left: 20px; }
+  .details li + li { margin-top: 6px; }
+  .details code { font-family: Consolas, "Cascadia Mono", monospace; font-size: 0.92em; }
+  footer { max-width: 1040px; margin: 0 auto; padding: 24px 24px 64px; border-top: 1px solid var(--rule); font-size: 14px; color: var(--ink-soft); }
+  footer p + p { margin-top: 6px; }
+  /* A picture this small leaves the wall little room: smaller captions, and the intro without its last line. */
+  @media (min-width: 900px) and (max-width: 1240px) {
+    h3 { font-size: 14px; }
+    .note p, .intro p:not(.lead):not(.small), .block p { font-size: 13px; }
+    .intro .small { display: none; }
+  }
+  @media (max-width: 640px) {
+    .top { padding: 14px 20px; }
+    .details .row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="name" href="#top">Frostbar</a>
+  <nav><a href="https://github.com/ternando0831-lang/Frostbar/releases/latest">Download</a><a href="https://github.com/ternando0831-lang/Frostbar">GitHub</a></nav>
+</header>
+
+<main id="top">
+<div class="film">
+  <div class="stage">
+    <img class="poster" src="frames/f0000.webp" width="1600" height="900" alt="A desk by a window, with a monitor showing Frostbar's menu bar and Dock on Windows 11.">
+    <canvas id="picture" role="img" aria-label="A desk by a window, with a monitor showing Frostbar. The view moves to each part of the screen as the page scrolls."></canvas>
+
+    <section class="scene" data-scene="hero">
+      <div class="pin intro" data-x="0.05" data-y="0.12" data-w="0.26" data-min="250" data-max="440">
+        <h1>Frostbar</h1>
+        <p class="lead">Windows 11, the macOS way.</p>
+        <p>A menu bar, a Dock, search and Control Center that run on top of the Windows you already have.</p>
+        <p class="actions"><a class="get" href="https://github.com/ternando0831-lang/Frostbar/releases/latest">Download for Windows 11</a><a href="https://github.com/ternando0831-lang/Frostbar">Source on GitHub</a></p>
+        <p class="small">Free under the MIT licence. Windows 11 22H2 or later, 64-bit.</p>
+      </div>
+    </section>
+
+    <section class="scene" data-scene="menubar">
+      <h2 class="pin" data-side="left" data-x="0.06" data-y="0.09" data-w="0.25">Menu bar</h2>
+      <div class="pin note" data-side="left" data-key="system" data-x="0.06" data-y="0.235" data-w="0.25">
+        <h3>System menu</h3>
+        <p>Frostbar's settings, your recent items, and sleep, restart and shut down.</p>
+      </div>
+      <div class="pin note" data-side="left" data-key="menus" data-x="0.06" data-y="0.42" data-w="0.25">
+        <h3>The front app's menus</h3>
+        <p>Its name and its menus sit at the top of the screen, whichever app you are in.</p>
+      </div>
+      <div class="pin note" data-side="left" data-key="shortcuts" data-at="0.4" data-x="0.06" data-y="0.62" data-w="0.25">
+        <h3>Shortcuts beside the commands</h3>
+        <p>For common apps, each command shows the keys that run it.</p>
+      </div>
+    </section>
+
+    <section class="scene" data-scene="status">
+      <h2 class="pin" data-side="right" data-x="0.685" data-y="0.07" data-w="0.26" data-max="360">Status and controls</h2>
+      <div class="pin note" data-side="right" data-key="items" data-route="over" data-x="0.685" data-y="0.165" data-w="0.25">
+        <h3>Wi-Fi, sound, battery</h3>
+        <p>Each opens a panel of its own. Hold Ctrl and drag to put them in your order.</p>
+      </div>
+      <div class="pin note" data-side="right" data-key="clock" data-x="0.685" data-y="0.27" data-w="0.25">
+        <h3>Clock and notifications</h3>
+        <p>Click the clock for Windows' notifications, grouped by app.</p>
+      </div>
+      <div class="pin note" data-side="right" data-key="panel" data-at="0.37" data-x="0.685" data-y="0.58" data-w="0.25">
+        <h3>Control Center</h3>
+        <p>Wi-Fi, Bluetooth, Focus, brightness, volume and what is playing, in one place.</p>
+      </div>
+    </section>
+
+    <section class="scene" data-scene="glass">
+      <h2 class="pin" data-side="right" data-x="0.75" data-y="0.14" data-w="0.21">Glass</h2>
+      <div class="pin note" data-side="right" data-key="rim" data-x="0.75" data-y="0.26" data-w="0.21">
+        <h3>Rims that catch the light</h3>
+        <p>Panels are translucent glass, in light and dark. On Windows 11 24H2 and later, their edges bend what is behind them.</p>
+      </div>
+    </section>
+
+    <section class="scene" data-scene="dock">
+      <h2 class="pin" data-side="left" data-x="0.05" data-y="0.37" data-w="0.21">Dock</h2>
+      <div class="pin note" data-side="left" data-key="plate" data-x="0.05" data-y="0.47" data-w="0.21">
+        <h3>Yours to arrange</h3>
+        <p>Drag to reorder. Bottom, left or right, or hidden until you need it.</p>
+      </div>
+      <div class="pin note" data-side="right" data-key="running" data-x="0.72" data-y="0.34" data-w="0.21">
+        <h3>Running apps</h3>
+        <p>An icon bounces while its app opens, and a dot marks what is open. Progress and badges show on the icon.</p>
+      </div>
+      <div class="pin note" data-side="right" data-key="grow" data-at="0.64" data-x="0.72" data-y="0.49" data-w="0.21">
+        <h3>Magnification</h3>
+        <p>Icons grow under the pointer, as much as you set.</p>
+      </div>
+    </section>
+
+    <section class="scene" data-scene="search">
+      <h2 class="pin" data-side="left" data-x="0.012" data-y="0.14" data-w="0.185">Search</h2>
+      <div class="pin note" data-side="left" data-key="field" data-at="0.4" data-x="0.012" data-y="0.27" data-w="0.185">
+        <h3>Alt+Space</h3>
+        <p>Opens search from anywhere. The shortcut is yours to change.</p>
+      </div>
+      <div class="pin note" data-side="right" data-key="kinds" data-at="0.56" data-x="0.803" data-y="0.24" data-w="0.185">
+        <h3>Apps, files, actions, clipboard</h3>
+        <p>The buttons narrow the search to one kind.</p>
+      </div>
+      <div class="pin note" data-side="right" data-key="answer" data-at="0.78" data-x="0.803" data-y="0.42" data-w="0.185">
+        <h3>Answers as you type</h3>
+        <p>Sums and unit conversions, without opening anything.</p>
+      </div>
+    </section>
+
+    <section class="scene" data-scene="settings">
+      <h2 class="pin" data-side="left" data-x="0.025" data-y="0.08" data-w="0.18">Settings</h2>
+      <div class="pin note" data-side="left" data-key="controls" data-at="0.12" data-x="0.025" data-y="0.20" data-w="0.18">
+        <h3>Change almost anything</h3>
+        <p>Light or dark, glass, sizes, shortcuts, hot corners, what the menu bar shows.</p>
+      </div>
+      <div class="pin note" data-side="left" data-key="pages" data-at="0.12" data-x="0.025" data-y="0.40" data-w="0.18">
+        <h3>One window</h3>
+        <p>Laid out like macOS's System Settings, with a search field.</p>
+      </div>
+    </section>
+
+    <section class="scene" data-scene="install">
+      <div class="pin block" data-side="right" data-x="0.70" data-y="0.14" data-w="0.24" data-min="260" data-max="400">
+        <h2>Install</h2>
+        <p>Download the zip, run <code>setup.cmd</code>, and choose whether Frostbar hides the Windows taskbar. Updating is the same; your settings stay.</p>
+        <p class="actions"><a class="get" href="https://github.com/ternando0831-lang/Frostbar/releases/latest">Download for Windows 11</a></p>
+      </div>
+    </section>
+  </div>
+</div>
+
+<section class="details">
+  <h2>Before you install</h2>
+  <dl>
+    <div class="row">
+      <dt>Also in it</dt>
+      <dd>An app grid with pages and folders, a window overview with Windows' virtual desktops along the top, hot corners, and a notification centre that groups notifications by app.</dd>
+    </div>
+    <div class="row">
+      <dt>Requirements</dt>
+      <dd>Windows 11 22H2 (build 22621) or later, 64-bit (x64). The .NET runtime is in the download. The author has tested it on one PC, with Windows 11 26H2.</dd>
+    </div>
+    <div class="row">
+      <dt>Install</dt>
+      <dd>
+        <ol>
+          <li>Download <code>Frostbar-&lt;version&gt;-&lt;commit&gt;-win-x64.zip</code> from <a href="https://github.com/ternando0831-lang/Frostbar/releases/latest">Releases</a>.</li>
+          <li>Right-click the zip, choose Properties, tick Unblock, then OK.</li>
+          <li>Extract it and double-click <code>setup.cmd</code>. If Windows says it protected your PC, choose More info, then Run anyway: the app is not signed.</li>
+        </ol>
+      </dd>
+    </div>
+    <div class="row">
+      <dt>If the taskbar does not come back</dt>
+      <dd>Double-click <code>%LOCALAPPDATA%\Programs\Frostbar\restore-taskbar.cmd</code>. It works without Frostbar running.</dd>
+    </div>
+    <div class="row">
+      <dt>Uninstall</dt>
+      <dd>Double-click <code>uninstall.cmd</code> in the same folder. It brings the taskbar back and removes the program, its Start menu entry and its start at sign-in.</dd>
+    </div>
+    <div class="row">
+      <dt>Privacy</dt>
+      <dd>Frostbar sends nothing over the network. Notifications, clipboard history and recent files are read on your PC only to be shown.</dd>
+    </div>
+    <div class="row">
+      <dt>Source</dt>
+      <dd>C# and WPF, under the MIT licence, on <a href="https://github.com/ternando0831-lang/Frostbar">GitHub</a>. English and Japanese.</dd>
+    </div>
+  </dl>
+</section>
+</main>
+
+<footer>
+  <p>Frostbar is an unofficial personal project, not affiliated with or endorsed by Apple Inc. or Microsoft. macOS is a trademark of Apple Inc.; Windows is a trademark of Microsoft.</p>
+  <p>The desk is rendered, not photographed, and the screen on it shows the app itself. The textures, the plant and the notebooks are from Poly Haven (CC0).</p>
+</footer>
+
+<script>
+// The story the pictures tell: scene.py writes it (out/story.json). The camera rests at a scene from its "frame" on
+// for "rest" frames (the screen playing a clip of the app, "fps" of them a second), then moves on for "step" frames;
+// the points are where the scene's captions' lines end, across and down the picture from 0 to 1.
+const STORY = {"frames":1415,"step":96,"fps":30,"scenes":[{"name":"hero","frame":0,"rest":1,"points":{}},{"name":"menubar","frame":96,"rest":111,"points":{"system":[0.3883,0.3115],"menus":[0.4525,0.3122],"shortcuts":[0.5833,0.4042]}},{"name":"status","frame":302,"rest":142,"points":{"items":[0.4325,0.2816],"clock":[0.576,0.2799],"panel":[0.6114,0.6184]}},{"name":"glass","frame":539,"rest":1,"points":{"rim":[0.6844,0.4731]}},{"name":"dock","frame":635,"rest":203,"points":{"grow":[0.4041,0.2766],"running":[0.6126,0.2788],"plate":[0.2694,0.2491]}},{"name":"search","frame":933,"rest":108,"points":{"field":[0.425,0.3736],"kinds":[0.5506,0.3736],"answer":[0.5795,0.4192]}},{"name":"settings","frame":1136,"rest":183,"points":{"pages":[0.3699,0.5119],"controls":[0.5852,0.3352]}},{"name":"install","frame":1414,"rest":1,"points":{}}]};
+
+const N = STORY.scenes.length, STEP = STORY.step, FRAMES = STORY.frames;
+const REST = 0.5;   // the share of a scene's scroll the camera rests for (it moves on in what is left)
+const TAIL = 0.35;  // a little more scroll for the last scene, so that its caption has arrived
+const calm = matchMedia('(prefers-reduced-motion: reduce)');
+const root = document.documentElement;
+const film = document.querySelector('.film'), stage = document.querySelector('.stage');
+const canvas = document.getElementById('picture'), ctx = canvas.getContext('2d');
+const scenes = [...document.querySelectorAll('.scene')];
+const clamp01 = x => Math.min(1, Math.max(0, x));
+const SVG = 'http://www.w3.org/2000/svg';
+
+// ---- the frames ------------------------------------------------------------------------------------------------
+const frames = new Array(FRAMES);
+let loading = 0;
+function load(i) {
+  if (frames[i]) return;
+  const img = frames[i] = new Image();
+  img.decoding = 'async';
+  loading++;
+  img.onload = () => { img.ready = true; loading--; pump(); wake(); };
+  img.onerror = () => { img.missing = true; loading--; pump(); };
+  img.src = 'frames/f' + String(i).padStart(4, '0') + '.webp';
+}
+/** Asks for more frames, a few at a time: those nearest the one shown, ahead of it before behind it. */
+function pump() {
+  if (!pumping) return;
+  const from = Math.max(0, Math.round(shown));
+  for (let d = 0; d < FRAMES && loading < 8; d++) {
+    if (from + d < FRAMES && !frames[from + d]) load(from + d);
+    if (loading < 8 && from - d >= 0 && !frames[from - d]) load(from - d);
+  }
+}
+/** Whether a frame has come (or never will: the page plays on without it). */
+const here = f => { const img = frames[Math.min(FRAMES - 1, Math.floor(f))]; return !!img && (img.ready || img.missing); };
+/** The loaded frame nearest to one (the resting frames arrive first, the ones between fill in). */
+function nearest(i) {
+  for (let d = 0; d < FRAMES; d++) {
+    if (frames[i - d] && frames[i - d].ready) return frames[i - d];
+    if (frames[i + d] && frames[i + d].ready) return frames[i + d];
+  }
+  return null;
+}
+/** Has the frames about to be drawn decoded ahead of time (a frame's first draw decodes it, about 5 ms). */
+let warmed = -1;
+function warm(a) {
+  if (a === warmed) return;
+  warmed = a;
+  for (let d = -10; d <= 10; d++) { const img = frames[a + d]; if (img && img.ready && img.decode) img.decode().catch(() => {}); }
+}
+// Each scene's picture as its clip ends first (what a reader who scrolls fast sees), then the rest from where the
+// page is.
+let pumping = false;
+for (const scene of STORY.scenes) load(scene.frame + scene.rest - 1);
+load(0);
+addEventListener('load', () => { pumping = true; pump(); });
+
+// ---- where things are ------------------------------------------------------------------------------------------
+let box = { x: 0, y: 0, w: 1, h: 1 }, stacked = false, length = 1;
+const at = (x, y) => [box.x + x * box.w, box.y + y * box.h];
+
+function layout() {
+  const vw = stage.clientWidth, vh = stage.clientHeight;
+  stacked = vw < 900;
+  root.classList.toggle('stacked', stacked);
+  // The picture is always as wide as the window, so that no caption's place is cut off: across the top of a
+  // narrow window, in the middle of one less wide than the picture (paper above and below, like a plate on a
+  // page), and trimmed above and below in one that is wider.
+  box = { x: 0, y: stacked ? 56 : (vh - vw * 9 / 16) / 2, w: vw, h: vw * 9 / 16 };
+  root.style.setProperty('--picture-height', box.h + 'px');
+  const ratio = Math.min(devicePixelRatio || 1, 2);
+  canvas.width = Math.round(vw * ratio); canvas.height = Math.round(vh * ratio);
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  length = vh * 1.5;
+  film.style.height = ((N - 1 + TAIL) * length + vh) + 'px';
+  scenes.forEach(place);
+  wake();
+}
+
+/** Puts a scene's captions on the picture and draws their lines to the points they name. */
+function place(scene, n) {
+  const points = STORY.scenes[n].points, vw = stage.clientWidth;
+  let svg = scene.querySelector('svg');
+  if (!svg) { svg = document.createElementNS(SVG, 'svg'); svg.setAttribute('aria-hidden', 'true'); scene.appendChild(svg); }
+  svg.textContent = '';
+  const notes = [...scene.querySelectorAll('.pin.note')]; // numbered as they read, top to bottom, when stacked
+  const below = {}; // where the last caption of each column ends: on a small picture the next one moves down
+  const pins = [...scene.querySelectorAll('.pin')].sort((a, b) => Number(a.dataset.y) - Number(b.dataset.y));
+  for (const pin of pins) {
+    const d = pin.dataset, share = Number(d.w);
+    const width = Math.min(Number(d.max || 290), Math.max(Number(d.min || 170), share * box.w));
+    if (!stacked) {
+      // A caption on the left is held by its right edge (its line leaves from there), one on the right by its left.
+      const edge = at(Number(d.x) + (d.side === 'left' ? share : 0), Number(d.y));
+      const left = Math.min(vw - width - 16, Math.max(16, d.side === 'left' ? edge[0] - width : edge[0]));
+      const top = Math.max(edge[1], below[d.side] || 64); // never under the page's name, in a window wider than the picture
+      pin.style.left = left + 'px'; pin.style.top = top + 'px'; pin.style.width = width + 'px';
+      below[d.side] = top + pin.offsetHeight + 14;
+    } else pin.style.left = pin.style.top = pin.style.width = '';
+    if (!pin.classList.contains('note')) continue;
+    const point = points[d.key], to = at(point[0], point[1]);
+    const g = document.createElementNS(SVG, 'g'); g.setAttribute('class', 'leader');
+    if (!stacked) {
+      const title = pin.querySelector('h3').getBoundingClientRect(), frame = stage.getBoundingClientRect();
+      const y = title.top - frame.top + title.height / 2;
+      const from = d.side === 'left' ? title.right - frame.left + 10 : title.left - frame.left - 10;
+      const knee = from + (d.side === 'left' ? 22 : -22);
+      // From the screen out to the words: slanting to a knee beside them, or (data-route="over") straight up off
+      // the screen and then across, where a slant would run over what the picture shows.
+      const path = 'M' + to[0] + ' ' + to[1] + 'L' + (d.route === 'over' ? to[0] : knee) + ' ' + y + 'L' + from + ' ' + y;
+      for (const cls of ['casing', 'line']) {
+        const p = document.createElementNS(SVG, 'path'); p.setAttribute('class', cls); p.setAttribute('d', path); g.appendChild(p);
+        const run = p.getTotalLength(); p.style.strokeDasharray = run; p.dataset.run = run;
+      }
+    }
+    const ring = document.createElementNS(SVG, 'circle'); ring.setAttribute('class', 'ring');
+    ring.setAttribute('cx', to[0]); ring.setAttribute('cy', to[1]); ring.setAttribute('r', 3.2);
+    const label = document.createElementNS(SVG, 'text'); label.setAttribute('x', to[0]); label.setAttribute('y', to[1]); label.textContent = notes.indexOf(pin) + 1;
+    g.append(ring, label); svg.appendChild(g);
+    pin.leader = g;
+  }
+}
+
+// ---- the page's place in the story -----------------------------------------------------------------------------
+// The picture does not jump to where the scroll is: it follows it (one notch of a wheel is several frames), and it
+// comes to rest on a whole frame, never between two (there both would show, one over the other).
+// Where the camera rests, the screen plays its clip by itself, at the clip's own pace; scrolling on through the
+// rest runs the clip ahead, and scrolling back takes it back.
+const FOLLOW = 90;   // ms: how soon the picture catches up with the scroll
+const SETTLE = 140;  // ms without scrolling before it takes the nearest whole frame
+let shown = -1, scrolled = -1e9, last = 0, running = false;
+let playing = -1, played = 0, placeBefore = 0; // the scene whose clip plays, how far it has (frames), where the scroll was
+let arrived = -1;                              // when the camera came to rest at that scene (its captions come then)
+const CAPTIONS = 700;                          // ms for them to come, once it has
+
+/** Where the scroll is in the story: 0 at the first scene, 1 at the second… */
+const place_of_scroll = () => Math.min(N - 1 + TAIL, Math.max(0, -film.getBoundingClientRect().top / length));
+/** A scene's last resting frame: its clip ended, everything its captions name on the screen. */
+const endOf = n => STORY.scenes[n].frame + STORY.scenes[n].rest - 1;
+/** Whether a frame is one of a clip's (the camera still): those are shown whole, never one mixed into the next. */
+const inClip = f => STORY.scenes.some(scene => scene.rest > 1 && f >= scene.frame && f <= scene.frame + scene.rest - 1);
+
+/** The frame the picture makes for: by the scroll, and by the clip that plays where the camera rests. */
+function aimAt(s, dt, resting, now) {
+  const i = Math.min(Math.floor(s), N - 1), p = s - i, scene = STORY.scenes[i], end = scene.rest - 1;
+  if (calm.matches) { playing = -1; return endOf(p < (1 + REST) / 2 || i === N - 1 ? i : i + 1); } // no travelling, no film
+  if (p > REST && i < N - 1) {
+    playing = -1;
+    const f = scene.frame + end + (p - REST) / (1 - REST) * STEP;
+    return resting ? Math.round(f) : f;
+  }
+  const byScroll = Math.min(1, p / REST) * end;
+  if (playing !== i) { playing = i; played = byScroll; arrived = -1; }
+  const there = shown >= scene.frame - 0.5 && shown <= scene.frame + end + 0.5;
+  if (there && arrived < 0) arrived = now;
+  if (s < placeBefore - 1e-4) played = Math.min(played, byScroll);  // scrolled back: the clip goes back with it
+  else if (played < end && there && here(scene.frame + played + 2))
+    played = Math.min(end, played + dt * STORY.fps / 1000);          // the camera is here: the clip plays
+  played = Math.max(played, byScroll);
+  return scene.frame + played;
+}
+
+/** Draws the picture at a frame; between two frames, the one mixed into the other — unless it is moving fast. */
+function draw(f, speed) {
+  ctx.clearRect(0, 0, stage.clientWidth, stage.clientHeight);
+  const a = Math.floor(f), part = f - a, one = frames[a], two = frames[a + 1];
+  if (speed > 1 || part < 0.02 || part > 0.98 || inClip(f) || !(one && one.ready && two && two.ready)) {
+    const near = nearest(Math.round(f));
+    if (near) ctx.drawImage(near, box.x, box.y, box.w, box.h);
+  } else {
+    ctx.drawImage(one, box.x, box.y, box.w, box.h);
+    ctx.globalAlpha = part; ctx.drawImage(two, box.x, box.y, box.w, box.h); ctx.globalAlpha = 1;
+  }
+  warm(Math.round(f));
+}
+
+/** One step of the display: the picture a little nearer the scroll's frame. False once it has come to rest. */
+function step(now) {
+  const s = place_of_scroll(), resting = now - scrolled > SETTLE, dt = Math.min(100, now - last);
+  const aim = Math.min(FRAMES - 1, aimAt(s, shown < 0 ? 0 : dt, resting, now)), before = shown;
+  placeBefore = s;
+  if (shown < 0 || calm.matches) shown = aim;
+  else {
+    shown += (aim - shown) * (1 - Math.exp(-dt / FOLLOW));
+    if (Math.abs(aim - shown) < 0.01) shown = aim;
+  }
+  last = now;
+  draw(shown, Math.abs(shown - before));
+  captions(s, now);
+  pump();
+  return shown !== aim || !resting || (playing >= 0 && (played < STORY.scenes[playing].rest - 1 || arrived < 0 || now - arrived < CAPTIONS + 100));
+}
+
+function captions(s, now) {
+  scenes.forEach((scene, n) => {
+    // A scene's captions come as the camera arrives, by the scroll or, the camera at rest there, by themselves
+    // (the line first, out from the screen; then the words), and go when it leaves. One that names what the clip
+    // brings (data-at: how far through the clip, 0 to 1) waits for it.
+    let come = n === 0 ? 1 : clamp01((s - (n - 0.02)) / 0.12);
+    if (n === playing && arrived >= 0) come = Math.max(come, clamp01((now - arrived) / CAPTIONS));
+    let go = n === N - 1 ? 0 : clamp01((s - (n + REST)) / 0.07);
+    if (calm.matches) { come = come > 0.5 ? 1 : 0; go = go > 0.5 ? 1 : 0; }
+    const visible = come > 0 && go < 1;
+    scene.style.visibility = visible ? 'visible' : 'hidden';
+    if (!visible) return;
+    const story = STORY.scenes[n], through = story.rest > 1 ? clamp01((shown - story.frame) / (story.rest - 1)) : 1;
+    for (const pin of scene.querySelectorAll('.pin')) {
+      const there = pin.dataset.at && !calm.matches ? Math.min(come, clamp01((through - Number(pin.dataset.at)) / 0.06)) : come;
+      pin.style.opacity = pin.classList.contains('note') ? clamp01((there - 0.55) / 0.45) * (1 - go) : clamp01(there / 0.5) * (1 - go);
+      if (!pin.leader) continue;
+      pin.leader.style.opacity = clamp01(there / 0.15) * (1 - go);
+      for (const path of pin.leader.querySelectorAll('path')) path.style.strokeDashoffset = Number(path.dataset.run) * (1 - clamp01(there / 0.7));
+    }
+  });
+}
+
+function wake() { if (!running) { running = true; last = performance.now(); requestAnimationFrame(tick); } }
+function tick(now) { running = step(now); if (running) requestAnimationFrame(tick); }
+addEventListener('scroll', () => { scrolled = performance.now(); wake(); }, { passive: true });
+addEventListener('resize', layout);
+calm.addEventListener('change', wake);
+if (document.fonts) document.fonts.ready.then(layout);
+layout();
+</script>
+</body>
+</html>

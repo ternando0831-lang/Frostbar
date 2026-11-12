@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Pinned exactly: 0.0.x releases change behaviour; re-run the M0 tray checks (S2) before upgrading -->
+    <PackageVersion Include="ManagedShell" Version="[0.0.374]" />
+    <PackageVersion Include="System.Management" Version="10.0.12" />
+    <!-- xunit v3 runs on Microsoft.Testing.Platform (global.json "test.runner"), no VSTest adapter needed -->
+    <PackageVersion Include="xunit.v3" Version="4.0.2" />
+  </ItemGroup>
+</Project>

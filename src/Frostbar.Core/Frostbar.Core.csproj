@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Pure logic, no Windows dependencies: everything here is unit-tested in tests/Frostbar.Core.Tests. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Frostbar.Core</RootNamespace>
+  </PropertyGroup>
+
+</Project>

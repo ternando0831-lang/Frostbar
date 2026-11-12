@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Win32 / COM / WinRT services. Talks to the OS; the decisions it applies come from Frostbar.Core. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.22621.0</SupportedOSPlatformVersion>
+    <UseWPF>true</UseWPF>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RootNamespace>Frostbar.Platform</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- WPF's implicit usings leave System.IO out (Path clashes with System.Windows.Shapes.Path, unused here) -->
+    <Using Include="System.IO" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Management" />
+    <!-- Tray only (ADR-001): TrayService + ExplorerTrayService + NotificationArea, nothing else from ManagedShell -->
+    <PackageReference Include="ManagedShell" />
+    <ProjectReference Include="..\Frostbar.Core\Frostbar.Core.csproj" />
+  </ItemGroup>
+
+</Project>
