@@ -105,20 +105,34 @@
   .leader .casing { fill: none; stroke: rgba(255, 255, 255, 0.85); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
   .leader .line { fill: none; stroke: var(--ink); stroke-width: 1.25; stroke-linejoin: round; }
   .leader .ring { fill: var(--ink); stroke: #fff; stroke-width: 1.5; }
-  .leader text { display: none; font: 600 12px "Libre Franklin", "Segoe UI", sans-serif; fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
 
-  /* A narrow or tall window: the picture across the top, the captions under it, numbered instead of lined. */
-  .stacked .scene { padding: calc(64px + var(--picture-height, 56vw)) 20px 20px; counter-reset: caption; }
-  .stacked .scene .pin { position: static; width: auto !important; text-align: left !important; margin-top: 14px; }
-  .stacked .scene h2.pin { margin-top: 0; }
+  /* A narrow window (a phone): an ordinary page that the finger scrolls, nothing held in place but the page's
+     name. Each scene is its picture, cut close to what it shows, with its captions under it, numbered instead of
+     lined. A scene's picture plays its piece of the film when it comes on the screen. */
+  .shot { display: none; }
+  .stacked .top { height: 53px; padding: 0 20px; align-items: center; background: var(--paper); border-bottom: 1px solid var(--rule); }
+  .stacked .top a { padding: 14px 0; }
+  .stacked .film { padding-top: 53px; }
+  .stacked .stage { position: static; height: auto; overflow: visible; }
+  .stacked #picture { display: none; }
+  .stacked .scene { position: static; visibility: visible; max-width: 720px; margin: 0 auto; padding-bottom: 56px; counter-reset: caption; }
+  .stacked .scene > svg { display: none; }
+  .stacked .shot {
+    display: block; position: relative; overflow: hidden; background: var(--rule);
+    aspect-ratio: 4 / 3; width: min(100%, 93vh); width: min(100%, 70svh * 4 / 3); /* whole on a phone on its side */
+  }
+  .stacked .shot canvas { display: block; width: 100%; height: 100%; }
+  .stacked .scene .pin { position: static; width: auto !important; text-align: left !important; margin: 16px 20px 0; }
+  .stacked .scene .shot + .pin { margin-top: 20px; }
   .stacked .note h3::before {
     counter-increment: caption; content: counter(caption);
     display: inline-block; width: 20px; height: 20px; margin-right: 8px; border: 1.5px solid var(--ink); border-radius: 50%;
     font-size: 12px; line-height: 17px; text-align: center; vertical-align: 1px;
   }
-  .stacked .leader .casing, .stacked .leader .line { display: none; }
-  .stacked .leader .ring { r: 10px; fill: #fff; stroke: var(--ink); }
-  .stacked .leader text { display: block; }
+  .shot .leader { opacity: 0; transition: opacity 0.25s; }
+  .shot .leader.on { opacity: 1; }
+  .shot .leader .number { fill: #fff; stroke: var(--ink); stroke-width: 1.5; }
+  .shot .leader text { font: 600 12px "Libre Franklin", "Segoe UI", sans-serif; fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
 
   .details { max-width: 1040px; margin: 0 auto; padding: 96px 24px 64px; }
   .details h2 { margin-bottom: 32px; }
@@ -140,6 +154,13 @@
   @media (max-width: 640px) {
     .top { padding: 14px 20px; }
     .details .row { grid-template-columns: 1fr; }
+    .details code { overflow-wrap: anywhere; } /* a long path would make the page wider than a small phone */
+  }
+  /* A phone on its side: the captions beside the picture, not under it and off the screen. */
+  @media (max-height: 480px) and (min-width: 560px) {
+    .stacked .scene { display: flow-root; }
+    .stacked .shot { float: left; margin-right: 20px; }
+    .stacked .scene .shot + .pin { margin-top: 0; }
   }
 </style>
 </head>
@@ -175,7 +196,7 @@
         <h3>The front app's menus</h3>
         <p>Its name and its menus sit at the top of the screen, whichever app you are in.</p>
       </div>
-      <div class="pin note" data-side="left" data-key="shortcuts" data-at="0.4" data-x="0.06" data-y="0.62" data-w="0.25">
+      <div class="pin note" data-side="left" data-key="shortcuts" data-mark="right 36" data-at="0.4" data-x="0.06" data-y="0.62" data-w="0.25">
         <h3>Shortcuts beside the commands</h3>
         <p>For common apps, each command shows the keys that run it.</p>
       </div>
@@ -191,7 +212,7 @@
         <h3>Clock and notifications</h3>
         <p>Click the clock for Windows' notifications, grouped by app.</p>
       </div>
-      <div class="pin note" data-side="right" data-key="panel" data-at="0.37" data-x="0.685" data-y="0.58" data-w="0.25">
+      <div class="pin note" data-side="right" data-key="panel" data-mark="right" data-at="0.37" data-x="0.685" data-y="0.58" data-w="0.25">
         <h3>Control Center</h3>
         <p>Wi-Fi, Bluetooth, Focus, brightness, volume and what is playing, in one place.</p>
       </div>
@@ -199,7 +220,7 @@
 
     <section class="scene" data-scene="glass">
       <h2 class="pin" data-side="right" data-x="0.75" data-y="0.14" data-w="0.21">Glass</h2>
-      <div class="pin note" data-side="right" data-key="rim" data-x="0.75" data-y="0.26" data-w="0.21">
+      <div class="pin note" data-side="right" data-key="rim" data-mark="right" data-x="0.75" data-y="0.26" data-w="0.21">
         <h3>Rims that catch the light</h3>
         <p>Panels are translucent glass, in light and dark. On Windows 11 24H2 and later, their edges bend what is behind them.</p>
       </div>
@@ -207,15 +228,15 @@
 
     <section class="scene" data-scene="dock">
       <h2 class="pin" data-side="left" data-x="0.05" data-y="0.37" data-w="0.21">Dock</h2>
-      <div class="pin note" data-side="left" data-key="plate" data-x="0.05" data-y="0.47" data-w="0.21">
+      <div class="pin note" data-side="left" data-key="plate" data-mark="down" data-x="0.05" data-y="0.47" data-w="0.21">
         <h3>Yours to arrange</h3>
         <p>Drag to reorder. Bottom, left or right, or hidden until you need it.</p>
       </div>
-      <div class="pin note" data-side="right" data-key="running" data-x="0.72" data-y="0.34" data-w="0.21">
+      <div class="pin note" data-side="right" data-key="running" data-mark="down" data-x="0.72" data-y="0.34" data-w="0.21">
         <h3>Running apps</h3>
         <p>An icon bounces while its app opens, and a dot marks what is open. Progress and badges show on the icon.</p>
       </div>
-      <div class="pin note" data-side="right" data-key="grow" data-at="0.64" data-x="0.72" data-y="0.49" data-w="0.21">
+      <div class="pin note" data-side="right" data-key="grow" data-mark="down" data-at="0.64" data-x="0.72" data-y="0.49" data-w="0.21">
         <h3>Magnification</h3>
         <p>Icons grow under the pointer, as much as you set.</p>
       </div>
@@ -231,7 +252,7 @@
         <h3>Apps, files, actions, clipboard</h3>
         <p>The buttons narrow the search to one kind.</p>
       </div>
-      <div class="pin note" data-side="right" data-key="answer" data-at="0.78" data-x="0.803" data-y="0.42" data-w="0.185">
+      <div class="pin note" data-side="right" data-key="answer" data-mark="right" data-at="0.78" data-x="0.803" data-y="0.42" data-w="0.185">
         <h3>Answers as you type</h3>
         <p>Sums and unit conversions, without opening anything.</p>
       </div>
@@ -239,11 +260,11 @@
 
     <section class="scene" data-scene="settings">
       <h2 class="pin" data-side="left" data-x="0.025" data-y="0.08" data-w="0.18">Settings</h2>
-      <div class="pin note" data-side="left" data-key="controls" data-at="0.12" data-x="0.025" data-y="0.20" data-w="0.18">
+      <div class="pin note" data-side="left" data-key="controls" data-mark="up" data-at="0.12" data-x="0.025" data-y="0.20" data-w="0.18">
         <h3>Change almost anything</h3>
         <p>Light or dark, glass, sizes, shortcuts, hot corners, what the menu bar shows.</p>
       </div>
-      <div class="pin note" data-side="left" data-key="pages" data-at="0.12" data-x="0.025" data-y="0.40" data-w="0.18">
+      <div class="pin note" data-side="left" data-key="pages" data-mark="left" data-at="0.12" data-x="0.025" data-y="0.40" data-w="0.18">
         <h3>One window</h3>
         <p>Laid out like macOS's System Settings, with a search field.</p>
       </div>
@@ -337,6 +358,7 @@ function load(i) {
 /** Asks for more frames, a few at a time: those nearest the one shown, ahead of it before behind it. */
 function pump() {
   if (!pumping) return;
+  if (stacked) { pumpShots(); return; }
   const from = Math.max(0, Math.round(shown));
   for (let d = 0; d < FRAMES && loading < 8; d++) {
     if (from + d < FRAMES && !frames[from + d]) load(from + d);
@@ -372,14 +394,14 @@ let box = { x: 0, y: 0, w: 1, h: 1 }, stacked = false, length = 1;
 const at = (x, y) => [box.x + x * box.w, box.y + y * box.h];
 
 function layout() {
-  const vw = stage.clientWidth, vh = stage.clientHeight;
-  stacked = vw < 900;
+  stacked = stage.clientWidth < 900;
   root.classList.toggle('stacked', stacked);
-  // The picture is always as wide as the window, so that no caption's place is cut off: across the top of a
-  // narrow window, in the middle of one less wide than the picture (paper above and below, like a plate on a
-  // page), and trimmed above and below in one that is wider.
-  box = { x: 0, y: stacked ? 56 : (vh - vw * 9 / 16) / 2, w: vw, h: vw * 9 / 16 };
-  root.style.setProperty('--picture-height', box.h + 'px');
+  if (stacked) { layoutShots(); return; }
+  const vw = stage.clientWidth, vh = stage.clientHeight;
+  // The picture is always as wide as the window, so that no caption's place is cut off: in the middle of a window
+  // less wide than the picture (paper above and below, like a plate on a page), and trimmed above and below in
+  // one that is wider.
+  box = { x: 0, y: (vh - vw * 9 / 16) / 2, w: vw, h: vw * 9 / 16 };
   const ratio = Math.min(devicePixelRatio || 1, 2);
   canvas.width = Math.round(vw * ratio); canvas.height = Math.round(vh * ratio);
   ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
@@ -392,43 +414,37 @@ function layout() {
 /** Puts a scene's captions on the picture and draws their lines to the points they name. */
 function place(scene, n) {
   const points = STORY.scenes[n].points, vw = stage.clientWidth;
-  let svg = scene.querySelector('svg');
+  let svg = scene.querySelector(':scope > svg');  // its own, not the one of the narrow window's picture
   if (!svg) { svg = document.createElementNS(SVG, 'svg'); svg.setAttribute('aria-hidden', 'true'); scene.appendChild(svg); }
   svg.textContent = '';
-  const notes = [...scene.querySelectorAll('.pin.note')]; // numbered as they read, top to bottom, when stacked
   const below = {}; // where the last caption of each column ends: on a small picture the next one moves down
   const pins = [...scene.querySelectorAll('.pin')].sort((a, b) => Number(a.dataset.y) - Number(b.dataset.y));
   for (const pin of pins) {
     const d = pin.dataset, share = Number(d.w);
     const width = Math.min(Number(d.max || 290), Math.max(Number(d.min || 170), share * box.w));
-    if (!stacked) {
-      // A caption on the left is held by its right edge (its line leaves from there), one on the right by its left.
-      const edge = at(Number(d.x) + (d.side === 'left' ? share : 0), Number(d.y));
-      const left = Math.min(vw - width - 16, Math.max(16, d.side === 'left' ? edge[0] - width : edge[0]));
-      const top = Math.max(edge[1], below[d.side] || 64); // never under the page's name, in a window wider than the picture
-      pin.style.left = left + 'px'; pin.style.top = top + 'px'; pin.style.width = width + 'px';
-      below[d.side] = top + pin.offsetHeight + 14;
-    } else pin.style.left = pin.style.top = pin.style.width = '';
+    // A caption on the left is held by its right edge (its line leaves from there), one on the right by its left.
+    const edge = at(Number(d.x) + (d.side === 'left' ? share : 0), Number(d.y));
+    const left = Math.min(vw - width - 16, Math.max(16, d.side === 'left' ? edge[0] - width : edge[0]));
+    const top = Math.max(edge[1], below[d.side] || 64); // never under the page's name, in a window wider than the picture
+    pin.style.left = left + 'px'; pin.style.top = top + 'px'; pin.style.width = width + 'px';
+    below[d.side] = top + pin.offsetHeight + 14;
     if (!pin.classList.contains('note')) continue;
     const point = points[d.key], to = at(point[0], point[1]);
     const g = document.createElementNS(SVG, 'g'); g.setAttribute('class', 'leader');
-    if (!stacked) {
-      const title = pin.querySelector('h3').getBoundingClientRect(), frame = stage.getBoundingClientRect();
-      const y = title.top - frame.top + title.height / 2;
-      const from = d.side === 'left' ? title.right - frame.left + 10 : title.left - frame.left - 10;
-      const knee = from + (d.side === 'left' ? 22 : -22);
-      // From the screen out to the words: slanting to a knee beside them, or (data-route="over") straight up off
-      // the screen and then across, where a slant would run over what the picture shows.
-      const path = 'M' + to[0] + ' ' + to[1] + 'L' + (d.route === 'over' ? to[0] : knee) + ' ' + y + 'L' + from + ' ' + y;
-      for (const cls of ['casing', 'line']) {
-        const p = document.createElementNS(SVG, 'path'); p.setAttribute('class', cls); p.setAttribute('d', path); g.appendChild(p);
-        const run = p.getTotalLength(); p.style.strokeDasharray = run; p.dataset.run = run;
-      }
+    const title = pin.querySelector('h3').getBoundingClientRect(), frame = stage.getBoundingClientRect();
+    const y = title.top - frame.top + title.height / 2;
+    const from = d.side === 'left' ? title.right - frame.left + 10 : title.left - frame.left - 10;
+    const knee = from + (d.side === 'left' ? 22 : -22);
+    // From the screen out to the words: slanting to a knee beside them, or (data-route="over") straight up off
+    // the screen and then across, where a slant would run over what the picture shows.
+    const path = 'M' + to[0] + ' ' + to[1] + 'L' + (d.route === 'over' ? to[0] : knee) + ' ' + y + 'L' + from + ' ' + y;
+    for (const cls of ['casing', 'line']) {
+      const p = document.createElementNS(SVG, 'path'); p.setAttribute('class', cls); p.setAttribute('d', path); g.appendChild(p);
+      const run = p.getTotalLength(); p.style.strokeDasharray = run; p.dataset.run = run;
     }
     const ring = document.createElementNS(SVG, 'circle'); ring.setAttribute('class', 'ring');
     ring.setAttribute('cx', to[0]); ring.setAttribute('cy', to[1]); ring.setAttribute('r', 3.2);
-    const label = document.createElementNS(SVG, 'text'); label.setAttribute('x', to[0]); label.setAttribute('y', to[1]); label.textContent = notes.indexOf(pin) + 1;
-    g.append(ring, label); svg.appendChild(g);
+    g.appendChild(ring); svg.appendChild(g);
     pin.leader = g;
   }
 }
@@ -526,8 +542,163 @@ function captions(s, now) {
   });
 }
 
-function wake() { if (!running) { running = true; last = performance.now(); requestAnimationFrame(tick); } }
-function tick(now) { running = step(now); if (running) requestAnimationFrame(tick); }
+// ---- a narrow window: an ordinary page -------------------------------------------------------------------------
+// The finger scrolls the page and nothing else: the pictures do not go by the scroll. Each scene has a picture of
+// its own, which plays the scene's piece of the film once it is on the screen: the camera coming over from the
+// scene before (at twice the pace, every other frame), then the clip. Before that, and after, it rests on the
+// scene as its clip ends, everything its captions name there.
+// CUT is what a scene's picture shows of the frame: the middle of the cut, across and down (0 to 1), and the share
+// of the frame's width it takes. The frames leave the wall bare for a wide window's captions; here the captions
+// are under the picture, so the picture is cut to the screen.
+const CUT = {
+  hero: [0.5, 0.5, 0.75], menubar: [0.52, 0.42, 0.4], status: [0.51, 0.51, 0.47], glass: [0.5, 0.5, 0.66],
+  dock: [0.515, 0.33, 0.54], search: [0.5, 0.46, 0.38], settings: [0.515, 0.52, 0.46], install: [0.5, 0.5, 0.75],
+};
+const WAY = STEP / 2;  // frames of the way over from the scene before
+const stills = new Set(STORY.scenes.map((_, n) => endOf(n)));
+const ease = t => t * t * (3 - 2 * t);
+let shots = null, shotsRunning = false, shotsLast = 0;
+
+/** The part of the frame (0 to 1 each way) that a cut shows in a picture of a shape (its width over its height). */
+function region(cut, shape) {
+  let w = cut[2], h = cut[2] * (16 / 9) / shape;
+  if (h > 1) { w /= h; h = 1; }
+  return { x: Math.min(1 - w, Math.max(0, cut[0] - w / 2)), y: Math.min(1 - h, Math.max(0, cut[1] - h / 2)), w, h };
+}
+
+function makeShots() {
+  shots = scenes.map((scene, n) => {
+    const story = STORY.scenes[n], el = document.createElement('div'), canvas = document.createElement('canvas');
+    const marks = document.createElementNS(SVG, 'svg');
+    el.className = 'shot'; marks.setAttribute('aria-hidden', 'true');
+    canvas.setAttribute('role', 'img');
+    canvas.setAttribute('aria-label', n ? 'The monitor on the desk, showing Frostbar: ' + scene.querySelector('h2').textContent : document.querySelector('.poster').alt);
+    el.append(canvas, marks); scene.prepend(el);
+    const reel = [];  // the frames of its film, in the order they play
+    if (n) for (let k = 0; k < WAY; k++) reel.push(endOf(n - 1) + 2 * k);
+    for (let k = n ? 0 : story.rest - 1; k < story.rest; k++) reel.push(story.frame + k);
+    // at: how far its film has played (in its frames), -1 before it starts. on: enough of it is on the screen to
+    // play. near: on the screen or about to be (its frames are worth asking for).
+    return { n, el, canvas, ctx: canvas.getContext('2d'), marks, reel, way: n ? WAY : 0, at: -1, on: false, near: false, drawn: -1, notes: [] };
+  });
+  const of = new Map(shots.map(shot => [shot.el, shot]));
+  const seen = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      const shot = of.get(entry.target);
+      shot.on = entry.intersectionRatio >= 0.5;
+      if (!entry.isIntersecting) shot.at = -1;  // gone from the screen: from the start the next time
+    }
+    wakeShots();
+  }, { threshold: [0, 0.5] });
+  const coming = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      const shot = of.get(entry.target);
+      shot.near = entry.isIntersecting;
+      // A phone has little memory: a scene far from the screen gives its frames up (all but the still ones).
+      // (Not when the window has grown wide and the pictures are gone: the one wide picture uses the same frames.)
+      if (!shot.near && stacked) for (const f of shot.reel) if (!stills.has(f) && frames[f] && frames[f].ready) frames[f] = undefined;
+    }
+    pumpShots();
+  }, { rootMargin: '100% 0px' });
+  for (const shot of shots) { seen.observe(shot.el); coming.observe(shot.el); }
+}
+
+function layoutShots() {
+  if (!shots) makeShots();
+  film.style.height = '';
+  const ratio = Math.min(devicePixelRatio || 1, 2);
+  for (const shot of shots) {
+    const scene = scenes[shot.n], story = STORY.scenes[shot.n];
+    scene.style.visibility = '';
+    for (const pin of scene.querySelectorAll('.pin')) pin.style.left = pin.style.top = pin.style.width = pin.style.opacity = '';
+    const w = shot.el.clientWidth, h = shot.el.clientHeight;
+    // A phone's window changes size as its address bar comes and goes; the picture does not, and stays as it is.
+    if (w === shot.w && h === shot.h) continue;
+    shot.w = w; shot.h = h;
+    const cw = Math.round(w * ratio), ch = Math.round(h * ratio);
+    if (shot.canvas.width !== cw || shot.canvas.height !== ch) { shot.canvas.width = cw; shot.canvas.height = ch; shot.drawn = -1; }
+    // The captions' numbers on the picture, numbered as the captions read: a dot where a caption's line would end,
+    // and its number a little way off (data-mark: which way and, if not 24, how far; up unless said), so that it
+    // does not cover the thing.
+    const part = region(CUT[story.name], w / h);
+    shot.marks.textContent = '';
+    shot.notes = [...scene.querySelectorAll('.pin.note')].map((pin, k) => {
+      const point = story.points[pin.dataset.key], x = (point[0] - part.x) / part.w * w, y = (point[1] - part.y) / part.h * h;
+      const [side, far] = (pin.dataset.mark || 'up').split(' ');
+      const way = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[side], off = Number(far || 24);
+      const nx = Math.min(w - 12, Math.max(12, x + way[0] * off)), ny = Math.min(h - 12, Math.max(12, y + way[1] * off));
+      const g = document.createElementNS(SVG, 'g'); g.setAttribute('class', 'leader');
+      for (const cls of ['casing', 'line']) {
+        const p = document.createElementNS(SVG, 'path'); p.setAttribute('class', cls); p.setAttribute('d', 'M' + x + ' ' + y + 'L' + nx + ' ' + ny); g.appendChild(p);
+      }
+      const ring = document.createElementNS(SVG, 'circle'); ring.setAttribute('class', 'ring');
+      ring.setAttribute('cx', x); ring.setAttribute('cy', y); ring.setAttribute('r', 3.2);
+      const number = document.createElementNS(SVG, 'circle'); number.setAttribute('class', 'number');
+      number.setAttribute('cx', nx); number.setAttribute('cy', ny); number.setAttribute('r', 10);
+      const label = document.createElementNS(SVG, 'text'); label.setAttribute('x', nx); label.setAttribute('y', ny); label.textContent = k + 1;
+      g.append(ring, number, label); shot.marks.appendChild(g);
+      return { g, at: Number(pin.dataset.at || 0) };
+    });
+    show(shot);  // now, not at the next frame: the picture is not blank for one, and its numbers do not fade in again
+  }
+  wakeShots();
+}
+
+/** Asks for the frames of the scenes on the screen or about to be: the one playing first, then down the page. */
+function pumpShots() {
+  if (!pumping || !shots || calm.matches) return;
+  const playing = shots.find(shot => shot.on && shot.at < shot.reel.length - 1);
+  const order = shots.filter(shot => shot.near).sort((a, b) => (b === playing) - (a === playing) || b.on - a.on || a.n - b.n);
+  for (const shot of order) for (const f of shot.reel) { if (loading >= 8) return; if (!frames[f]) load(f); }
+}
+
+/** Whether the frames of a shot's film from one on, a few of them, have come. */
+const ahead = (shot, i, n) => { for (let k = i; k <= Math.min(shot.reel.length - 1, i + n); k++) if (!here(shot.reel[k])) return false; return true; };
+
+/** Draws a shot's picture where its film is, and shows the numbers of what the film has brought. */
+function show(shot) {
+  const end = shot.reel.length - 1, i = shot.at < 0 ? end : Math.floor(shot.at), img = frames[shot.reel[i]];
+  if (shot.drawn !== i && img && img.ready) {
+    // On the way over, the cut goes from the scene before's to this one's.
+    let cut = CUT[STORY.scenes[shot.n].name];
+    if (i < shot.way) { const from = CUT[STORY.scenes[shot.n - 1].name], e = ease(i / shot.way); cut = cut.map((v, k) => from[k] + (v - from[k]) * e); }
+    const part = region(cut, shot.canvas.width / shot.canvas.height), W = img.naturalWidth, H = img.naturalHeight;
+    // Its first frames come over the still picture that is there, not as a cut.
+    shot.ctx.globalAlpha = shot.at >= 0 && i < 6 && end > 0 && shot.drawn >= 0 ? 0.4 : 1;
+    shot.ctx.drawImage(img, part.x * W, part.y * H, part.w * W, part.h * H, 0, 0, shot.canvas.width, shot.canvas.height);
+    shot.drawn = i;
+  }
+  const through = shot.at < 0 || shot.at >= end ? 1 : (shot.at - shot.way) / Math.max(1, end - shot.way);
+  for (const note of shot.notes) note.g.classList.toggle('on', through >= note.at);
+}
+
+/** One step of the display: the topmost picture on the screen that has not played through plays on, one at a time. */
+function stepShots(now) {
+  const dt = Math.min(100, now - shotsLast);
+  shotsLast = now;
+  if (calm.matches) for (const shot of shots) shot.at = -1;  // no travelling, no film: the still pictures
+  const shot = calm.matches ? null : shots.find(shot => shot.on && shot.at < shot.reel.length - 1);
+  if (shot) {
+    const end = shot.reel.length - 1;
+    if (shot.at < 0) { if (ahead(shot, 0, 12)) shot.at = 0; }                             // starts once its first frames have come
+    else if (ahead(shot, Math.floor(shot.at) + 1, 2)) shot.at = Math.min(end, shot.at + dt * STORY.fps / 1000);
+    // Has the frames about to be drawn decoded ahead of time.
+    for (let k = 1; k <= 4; k++) { const img = frames[shot.reel[Math.floor(shot.at) + k]]; if (img && img.ready && !img.warm && img.decode) { img.warm = true; img.decode().catch(() => {}); } }
+  }
+  for (const each of shots) show(each);
+  pumpShots();
+  return !!shot;
+}
+
+function wakeShots() { if (shots && !shotsRunning) { shotsRunning = true; shotsLast = performance.now(); requestAnimationFrame(tickShots); } }
+function tickShots(now) { shotsRunning = stacked && stepShots(now); if (shotsRunning) requestAnimationFrame(tickShots); }
+
+function wake() {
+  if (stacked) { wakeShots(); return; }
+  if (!running) { running = true; last = performance.now(); requestAnimationFrame(tick); }
+}
+function tick(now) { running = !stacked && step(now); if (running) requestAnimationFrame(tick); }
+
 addEventListener('scroll', () => { scrolled = performance.now(); wake(); }, { passive: true });
 addEventListener('resize', layout);
 calm.addEventListener('change', wake);
